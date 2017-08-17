@@ -27,7 +27,6 @@ public class MainService {
 
     public static boolean checkLogin(HttpServletRequest request, HttpServletResponse response) throws IOException, ServletException {
         Cookie[]  cookie = request.getCookies();
-        //System.out.println("cookioes = "+cookie);
         if(cookie ==null ){
             return false;
         }
@@ -73,7 +72,8 @@ public class MainService {
 
             String req_date = request.getParameter("date");
             List<Todo> todos=new ArrayList<Todo>();
-            if(req_date.equals(null) || req_date.equals("undefined")){
+            System.out.println(req_date);
+            if(req_date.equals("undefined")){
                 todos = store.getTodos();
             }
             else {
@@ -86,7 +86,6 @@ public class MainService {
                     e.printStackTrace();
                 }
             }
-
             PrintWriter writer = response.getWriter();
 
             response.setContentType("application/json");
@@ -130,7 +129,5 @@ public class MainService {
 
         store.addTodos(todo);
         store.updateTodo(todo);
-        //System.out.println("ending now");
-        response.sendRedirect("/TodoTodo/home.html");
     }
 }

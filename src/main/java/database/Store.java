@@ -94,8 +94,10 @@ public class Store {
         List<Todo> list = new ArrayList<Todo>();
         for (Map.Entry<Date, Todo > entry : updatedTodos.entrySet())
         {
-            if(entry.getKey().after(date))
+            System.out.println("Change in date ==  " + entry.getKey().toString() + date);
+            if(entry.getKey().after(date)){
                 list.add(entry.getValue());
+            }
         }
         return list;
     }

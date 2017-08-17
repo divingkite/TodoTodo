@@ -16,8 +16,8 @@ function executer(url,method,params,callbackFunc) {
 
 function getTodos() {
 
-    var method = "get";
-    var url = "/TodoTodo/home" + "?date=" + window.date;
+    var method = "GET";
+    var url = "/TodoTodo/home" + "?&date=" + window.date;
     var params = null;
 
     executer(url,method,params,formatter);
@@ -65,7 +65,6 @@ function addNecessary(todo){
     str = str.concat("<div class=\"description col-sm-12\">Description: ");
     str = str.concat(todo["description"]);
     str = str.concat("</div></div></div></div></div>");
-    console.log(str);
     return str;
 }
 
@@ -74,7 +73,6 @@ function formatter(data){
     var data = JSON.parse(data);
     window.date = data["date"];
     var todos = data["todos"];
-
     var unassigned="";
     var assigned="";
     var completed="";
@@ -112,7 +110,6 @@ function formatter(data){
 
         }
     }
-
     document.getElementById("completed").innerHTML = completed;
     document.getElementById("unassigned").innerHTML = unassigned;
     document.getElementById("assigned").innerHTML = assigned;
@@ -122,9 +119,9 @@ function addTask(){
     var method = "post";
     var title = document.getElementById("title").value;
     var description = document.getElementById("description").value;
-    var params = "name=" + title + "&description=" + description + "&date=" + window.date;
-
-    executer("/TodoTodo/addtask",method,params,formatter);
+    var params = "title=" + title + "&description=" + description;
+    executer("/TodoTodo/addtask",method,params,getTodos);
+    //document.getElementById("addTaskForm").style.display="none";
 }
 function addTaskFunc(){
 }
@@ -136,7 +133,6 @@ function addAssignee(id){
     var method="post";
     var assignedTo = document.getElementById("assignedTo" + id).value;
     var params = "todoId=" + id + "&assignedTo=" + assignedTo + "&date=" + window.date;
-
     executer("/TodoTodo/assign",method,params,changeStatusfunc);
 }
 function changeStatus(id){
