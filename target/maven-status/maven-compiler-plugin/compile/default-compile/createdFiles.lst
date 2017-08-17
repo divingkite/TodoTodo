@@ -1,0 +1,17 @@
+services/LogoutService.class
+services/MainService.class
+model/Todo.class
+controller/LoginController.class
+services/DateParser.class
+services/StatusTransferService.class
+services/RegisterService.class
+services/AssigneeService.class
+services/ErrorMessages.class
+database/Store.class
+controller/LogoutController.class
+model/User.class
+controller/AssigneeController.class
+controller/RegisterController.class
+controller/TransferController.class
+services/LoginService.class
+controller/MainController.class
