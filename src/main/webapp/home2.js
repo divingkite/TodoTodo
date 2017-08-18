@@ -5,6 +5,7 @@ function executer(url,method,params,callbackFunc) {
     http.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
     http.onreadystatechange = function() {
         if(http.readyState == 4 && http.status == 200) {
+            console.log("response ==  ",http.responseText);
             callbackFunc(http.responseText);
         }
         else if(http.status != 200){

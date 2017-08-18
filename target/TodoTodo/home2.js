@@ -16,8 +16,8 @@ function executer(url,method,params,callbackFunc) {
 
 function getTodos() {
 
-    var method = "get";
-    var url = "/TodoTodo/home" + "?date=" + window.date;
+    var method = "GET";
+    var url = "/TodoTodo/home" + "?&date=" + window.date;
     var params = null;
 
     executer(url,method,params,formatter);
@@ -30,55 +30,49 @@ function addNecessary(todo){
     str = str.concat("\">");
     str = str.concat(todo["name"]);
 
-
     if(todo["status"]=="0"){
-        //str = str.concat("<form role=\"form\" class=\"form-horizontal\" action=\"/TodoTodo/assign\" method=\"post\">");
-        //str = str.concat("<input style=\"float:right;\" type=\"text\" name=\"assignedTo\" placeholder=\"assign to\" required />");
         str = str.concat("<input style=\"float:right;\" type=\"text\" id=\"assignedTo" + todo["todoId"].toString() + "\" placeholder=\"assign to\" required />");
     }
-    //else{
-      //  str = str.concat("<form role=\"form\" class=\"form-horizontal\" action=\"/TodoTodo/transfer\" method=\"post\">");
-
-
     if(todo["status"]=="0"){
         str = str.concat("<button onclick=\"addAssignee(");
         str = str.concat(todo["todoId"].toString() + ");\" style=\"float:right;\" type=\"button\" class=\"btn btn-default btn-sm\"><span class=\"glyphicon glyphicon-chevron-right\">");
         str = str.concat("</span>Assign</button>");
-        //str = str.concat("<input type=\"submit\" value=\"Assign\" class=\"btn btn-primary btn-sm\">");
     }
     else if(todo["status"]=="1"){
         str = str.concat("<button onclick=\"changeStatus(");
         str = str.concat(todo["todoId"].toString() + ");\" style=\"float:right;\" type=\"button\" class=\"btn btn-default btn-sm\"><span class=\"glyphicon glyphicon-chevron-right\">");
         str = str.concat("</span>Completed</button>");
-        //str = str.concat("<input type=\"submit\" value=\"Completed\" class=\"btn btn-primary btn-sm\">");
     }
     else if(todo["status"]=="2"){
         str = str.concat("<button onclick=\"changeStatus(");
         str = str.concat(todo["todoId"].toString() + ");\" style=\"float:right;\" type=\"button\" class=\"btn btn-default btn-sm\"><span class=\"glyphicon glyphicon-chevron-right\">");
         str = str.concat("</span>Delete</button>");
-         //str = str.concat("<input type=\"submit\" value=\"Delete\" class=\"btn btn-primary btn-sm\">");
     }
 
     str = str.concat("</a>");
     str = str.concat("</h4></div><div id=\"qq");
     str = str.concat(todo["todoId"].toString());
-    str = str.concat("\" class=\"panel-collapse collapse\"><div class=\"panel-body\"><div class=\"row\"><div class=\"author-name col-sm-5\">");
+    str = str.concat("\" class=\"panel-collapse collapse\"><div class=\"panel-body\"><div class=\"row\"><div class=\"author-name col-sm-4\">Created By:   ");
     str = str.concat(todo["creator"]);
-    str = str.concat("</div><div class=\"date-created col-sm-5\">");
-    str = str.concat(todo["date"].toString());
-    str = str.concat("</div></div><div class=\"description\">");
+    str = str.concat("</div><div class=\"date-created col-sm-4\">Created on: ");
+    str = str.concat(todo["date"].toString() + "</div>");
+
+    if(todo["status"]!="0"){
+        str = str.concat("<div class=\"assignedTo col-sm-4\">Assigned to: ");
+        str = str.concat(todo["assigned"] + "</div>");
+    }
+    str = str.concat("<div class=\"row\">");
+    str = str.concat("<div class=\"description col-sm-12\">Description: ");
     str = str.concat(todo["description"]);
-    str = str.concat("</div></div></div>");
+    str = str.concat("</div></div></div></div></div>");
     return str;
 }
 
 function formatter(data){
 
     var data = JSON.parse(data);
-
     window.date = data["date"];
     var todos = data["todos"];
-
     var unassigned="";
     var assigned="";
     var completed="";
@@ -116,13 +110,6 @@ function formatter(data){
 
         }
     }
-    /*window.addEventListener('load',
-
-        function() {
-            document.getElementById("completed").innerHTML = completed;
-            document.getElementById("unassigned").innerHTML = unassigned;
-            document.getElementById("assigned").innerHTML = assigned;
-        }, false);*/
     document.getElementById("completed").innerHTML = completed;
     document.getElementById("unassigned").innerHTML = unassigned;
     document.getElementById("assigned").innerHTML = assigned;
@@ -132,9 +119,9 @@ function addTask(){
     var method = "post";
     var title = document.getElementById("title").value;
     var description = document.getElementById("description").value;
-    var params = "name=" + title + "&description=" + description + "&date=" + window.date;
-
-    executer("/TodoTodo/addtask",method,params,formatter);
+    var params = "title=" + title + "&description=" + description;
+    executer("/TodoTodo/addtask",method,params,getTodos);
+    //document.getElementById("addTaskForm").style.display="none";
 }
 function addTaskFunc(){
 }
@@ -146,7 +133,6 @@ function addAssignee(id){
     var method="post";
     var assignedTo = document.getElementById("assignedTo" + id).value;
     var params = "todoId=" + id + "&assignedTo=" + assignedTo + "&date=" + window.date;
-
     executer("/TodoTodo/assign",method,params,changeStatusfunc);
 }
 function changeStatus(id){

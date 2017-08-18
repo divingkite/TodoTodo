@@ -82,7 +82,7 @@
                                         <label for="registerMobile" class="col-sm-2 control-label">
                                             Mobile</label>
                                         <div class="col-sm-10">
-                                            <input type="email" class="form-control" name="registerPhone" placeholder="Mobile" required />
+                                            <input type="phone" class="form-control" name="registerPhone" placeholder="Mobile" required pattern=".{10}" />
                                         </div>
                                     </div>
                                     <div class="form-group">

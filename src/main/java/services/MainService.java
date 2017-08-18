@@ -72,7 +72,6 @@ public class MainService {
 
             String req_date = request.getParameter("date");
             List<Todo> todos=new ArrayList<Todo>();
-            System.out.println(req_date);
             if(req_date.equals("undefined")){
                 todos = store.getTodos();
             }
