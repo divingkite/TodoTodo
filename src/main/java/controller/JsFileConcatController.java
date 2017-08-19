@@ -1,6 +1,6 @@
 package controller;
 
-import services.AssigneeService;
+import services.JsFileConcatService;
 
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
@@ -9,14 +9,14 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 
-@WebServlet(name="AssigneeController",urlPatterns={
-        "/assign" //Post
+@WebServlet(name="JsFileConcatController",urlPatterns={
+        "/joinjs" //Get
 })
-public class AssigneeController extends HttpServlet {
+public class JsFileConcatController extends HttpServlet {
 
     @Override
-    protected void doPost(HttpServletRequest request,
+    protected void doGet(HttpServletRequest request,
                           HttpServletResponse response) throws IOException, ServletException {
-        AssigneeService.serviceMethod(request, response);
+        JsFileConcatService.serviceMethod(request, response);
     }
 }

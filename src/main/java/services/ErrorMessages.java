@@ -6,6 +6,8 @@ import java.io.PrintWriter;
 
 public class ErrorMessages {
 
+    // code repitions
+
     public void alreadyCompleted(HttpServletResponse response) throws IOException {
         PrintWriter writer = response.getWriter();
         String message = "";
@@ -67,4 +69,7 @@ public class ErrorMessages {
         writer.flush();
         writer.close();
     }
+
+
+
 }

@@ -4,14 +4,17 @@ model/Todo.class
 controller/LoginController.class
 services/DateParser.class
 services/StatusTransferService.class
+filter/ServletFilter.class
 services/RegisterService.class
 services/AssigneeService.class
 services/ErrorMessages.class
 database/Store.class
 controller/LogoutController.class
+services/JsFileConcatService.class
 model/User.class
 controller/AssigneeController.class
 controller/RegisterController.class
 controller/TransferController.class
 services/LoginService.class
+controller/JsFileConcatController.class
 controller/MainController.class

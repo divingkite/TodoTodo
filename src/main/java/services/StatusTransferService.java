@@ -34,6 +34,9 @@ public class StatusTransferService {
             messageGenerator.notExist(response);
             return;
         }
+
+        //  constants
+
         String status = todo.getStatus();
         if(status.equals(reqStatus)){
             if (status.equals("2")) {

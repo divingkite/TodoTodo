@@ -1,3 +1,4 @@
+(function(){
 function executer(url,method,params,callbackFunc) {
 
     var http = new XMLHttpRequest();
@@ -23,7 +24,12 @@ function getTodos() {
     executer(url,method,params,formatter);
 }
 
+
+// remove this as this is not readable and use java scropt
 function addNecessary(todo){
+
+    var  x1= document.createElement("div");
+    x1.class
     var str="";
     str = str.concat("<div class=\"panel-heading\"><h4 class=\"panel-title todo-title\"><a data-toggle=\"collapse\" href=\"#qq");
     str = str.concat(todo["todoId"].toString());
@@ -128,7 +134,6 @@ function addTaskFunc(){
 
 getTodos();
 
-
 function addAssignee(id){
     var method="post";
     var assignedTo = document.getElementById("assignedTo" + id).value;
@@ -150,3 +155,5 @@ function changeStatus(id){
 function changeStatusfunc(){
     getTodos();
 }
+
+})();

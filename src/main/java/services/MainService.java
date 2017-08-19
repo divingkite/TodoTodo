@@ -27,7 +27,7 @@ public class MainService {
 
     public static boolean checkLogin(HttpServletRequest request, HttpServletResponse response) throws IOException, ServletException {
         Cookie[]  cookie = request.getCookies();
-        if(cookie ==null ){
+        if(cookie == null ){
             return false;
         }
         for (Cookie cur : cookie) {
