@@ -1,6 +1,7 @@
 package services;
 
 import database.Store;
+import utils.ErrorMessages;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.Cookie;

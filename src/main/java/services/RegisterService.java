@@ -2,6 +2,7 @@ package services;
 
 import database.Store;
 import model.User;
+import utils.ErrorMessages;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.Cookie;

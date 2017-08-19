@@ -1,4 +1,4 @@
-package services;
+package utils;
 
 import javax.servlet.http.HttpServletRequest;
 import java.text.DateFormat;

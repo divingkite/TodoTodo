@@ -1,6 +1,6 @@
 package services;
 
-import database.Store;
+import utils.LoginCheck;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.Cookie;
@@ -12,18 +12,13 @@ public class LogoutService {
     public static void serviceMethod(HttpServletRequest request,
                                      HttpServletResponse response) throws IOException, ServletException {
 
-        Store store = Store.getInstance();
-        Cookie[]  cookies = request.getCookies();
-
-        for (Cookie cur : cookies) {
-            if (cur.getName().equals("sessionId")) {
-                store.getLoginMap().remove(cur.getValue());
-                cur = new Cookie("sessionId",null);
-                cur.setMaxAge(0);
-                response.addCookie(cur);
-                response.sendRedirect( "/TodoTodo");
-                return;
-            }
+        if(LoginCheck.check(request,response))
+        {
+            Cookie cur = new Cookie("sessionId",null);
+            cur.setMaxAge(0);
+            response.addCookie(cur);
+            response.sendRedirect( "/TodoTodo");
+            return;
         }
         response.sendRedirect( "/TodoTodo");
     }

@@ -6,9 +6,11 @@ import model.User;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
+import utils.ErrorMessages;
+import utils.LoginCheck;
+import utils.UserFromCookie;
 
 import javax.servlet.ServletException;
-import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
@@ -23,36 +25,7 @@ import java.util.Locale;
 
 public class MainService {
 
-    static Store store = Store.getInstance();
-
-    public static boolean checkLogin(HttpServletRequest request, HttpServletResponse response) throws IOException, ServletException {
-        Cookie[]  cookie = request.getCookies();
-        if(cookie == null ){
-            return false;
-        }
-        for (Cookie cur : cookie) {
-            if (cur.getName().equals("sessionId")) {
-                if (store.getLoginMap().containsKey(cur.getValue()))
-                    return true;
-            }
-        }
-
-        return false;
-    }
-
-    private static User getUserFromSessionId(HttpServletRequest request, HttpServletResponse response) throws IOException, ServletException {
-
-        Cookie[]  cookie = request.getCookies();
-
-        for (Cookie cur : cookie) {
-            if (cur.getName().equals("sessionId")) {
-                if (store.getLoginMap().containsKey(cur.getValue()))
-                    return store.getLoginMap().get(cur.getValue());
-            }
-        }
-
-        return null;
-    }
+    private static Store store = Store.getInstance();
 
     private static JSONObject jsonifyTodo(Todo todo) throws JSONException {
         JSONObject json = new JSONObject();
@@ -68,7 +41,7 @@ public class MainService {
 
     public static void serviceMethodHome(HttpServletRequest request,
                                      HttpServletResponse response) throws IOException, ServletException {
-        if (checkLogin(request, response)) {
+        if (LoginCheck.check(request, response)) {
 
             String req_date = request.getParameter("date");
             List<Todo> todos=new ArrayList<Todo>();
@@ -117,13 +90,13 @@ public class MainService {
     }
     public static void serviceMethodAddTask(HttpServletRequest request,
                                         HttpServletResponse response) throws IOException, ServletException {
-        if(!checkLogin(request,response)){
+        if(!LoginCheck.check(request,response)){
             response.sendRedirect("/TodoTodo");
         }
         String name= request.getParameter("title");
         String description= request.getParameter("description");
 
-        User user = getUserFromSessionId(request,response);
+        User user = UserFromCookie.getUserFromSessionId(request,response);
         Todo todo = new Todo(name,description,user.getUserName());
 
         store.addTodos(todo);

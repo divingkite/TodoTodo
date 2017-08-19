@@ -2,6 +2,9 @@ package services;
 
 import database.Store;
 import model.Todo;
+import utils.DateParser;
+import utils.ErrorMessages;
+import utils.LoginCheck;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
@@ -10,7 +13,6 @@ import java.io.IOException;
 import java.util.Date;
 
 import static java.lang.Long.parseLong;
-import static services.MainService.checkLogin;
 
 public class StatusTransferService {
 
@@ -18,7 +20,7 @@ public class StatusTransferService {
 
     public static void serviceMethod(HttpServletRequest request,
                                      HttpServletResponse response) throws IOException, ServletException {
-        if(!checkLogin(request,response)){
+        if(!LoginCheck.check(request,response)){
             response.sendRedirect("/TodoTodo");
         }
 
