@@ -1,8 +1,8 @@
 package services;
 
 import database.Store;
+import model.Constants;
 import model.Todo;
-import utils.DateParser;
 import utils.ErrorMessages;
 import utils.LoginCheck;
 
@@ -10,7 +10,6 @@ import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
-import java.util.Date;
 
 import static java.lang.Long.parseLong;
 
@@ -27,36 +26,32 @@ public class StatusTransferService {
 
         Todo todo = store.getTodo(parseLong(request.getParameter("todoId")));
         String reqStatus = request.getParameter("status");
-        String reqDate = request.getParameter("date");
-        Date date = new DateParser().parseDate(request);
         ErrorMessages messageGenerator = new ErrorMessages();
 
-        boolean exists = (store.getTodo(parseLong(request.getParameter("todoId"))) != null);
+        boolean exists = (todo != null);
         if(!exists){
             messageGenerator.notExist(response);
             return;
         }
 
-        //  constants
-
-        String status = todo.getStatus();
+        Constants status = todo.getStatus();
         if(status.equals(reqStatus)){
-            if (status.equals("2")) {
+            if (status.equals(Constants.COMPLETED)) {
                 store.setStatus(todo);
                 store.updateTodo(todo);
                 store.remove(todo);
             }
-            else if (status.equals("1")) {
+            else if (status.equals(Constants.ASSIGNED)) {
                 store.setStatus(todo);
                 store.updateTodo(todo);
             }
         }
         else {
-            if (todo.getStatus().equals("1")) {
+            if (todo.getStatus().equals(Constants.ASSIGNED)) {
                 messageGenerator.alreadyAssigned(response);
                 return;
             }
-            if (todo.getStatus().equals("2")) {
+            if (todo.getStatus().equals(Constants.COMPLETED)) {
                 messageGenerator.alreadyCompleted(response);
                 return;
             }

@@ -95,8 +95,8 @@ public class MainService {
         }
         String name= request.getParameter("title");
         String description= request.getParameter("description");
-
         User user = UserFromCookie.getUserFromSessionId(request,response);
+
         Todo todo = new Todo(name,description,user.getUserName());
 
         store.addTodos(todo);

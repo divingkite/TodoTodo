@@ -1,11 +1,10 @@
 package database;
 
+import model.Constants;
 import model.Todo;
 import model.User;
 
 import java.util.*;
-
-import static java.lang.Integer.parseInt;
 
 /**
  * Created by hitesh.ag on 10/08/17.
@@ -73,7 +72,8 @@ public class Store {
     }
 
     synchronized public void setStatus(Todo todo){
-        todo.setStatus((parseInt(todo.getStatus()) + 1) + "");
+        Constants status = todo.getStatus();
+        todo.setStatus( Constants.valueOf(Constants.getValue(status) + 1));
     }
 
     synchronized public void updateTodo(Todo todo){

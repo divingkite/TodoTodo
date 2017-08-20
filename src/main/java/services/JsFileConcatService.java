@@ -12,7 +12,6 @@ public class JsFileConcatService {
                                      HttpServletResponse response) throws IOException, ServletException {
 
         List<File> jsFileList = new ArrayList<File>();
-        System.out.println("creating new file");
         BufferedWriter bw = new BufferedWriter(new FileWriter("./src/main/webapp/src.js",false));
 
         jsFileList.add(new File("./src/main/webapp/home2.js"));

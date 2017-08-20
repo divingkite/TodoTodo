@@ -1,9 +1,11 @@
+var globalDate;
+var prevTodos;
 var constants = {
-    UNASSIGNED : "0",
-    ASSIGNED   : "1",
-    COMPLETED  : "2"
+    UNASSIGNED : "UNASSIGNED",
+    ASSIGNED : "ASSIGNED",
+    COMPLETED : "COMPLETED",
+    DELETED : "DELETED"
 }
-
 function executer(url,method,params,callbackFunc) {
 
     var http = new XMLHttpRequest();
@@ -23,18 +25,16 @@ function executer(url,method,params,callbackFunc) {
 function getTodos() {
 
     var method = "GET";
-    var url = "/TodoTodo/home" + "?&date=" + window.date;
+    var url = "/TodoTodo/home" + "?&date=" + globalDate;
     var params = null;
 
     executer(url,method,params,formatter);
 }
 
-
-// remove this as this is not readable and use java scropt
 function getPanelBody(todo){
     var panelBodyOuter = document.createElement("div");
-    panelBody.setAttribute("id","qq" + todo["todoId"].toString());
-    panelBody.className += "panel-collapse collapse";
+    panelBodyOuter.setAttribute("id","body" + todo["todoId"].toString());
+    panelBodyOuter.className += "panel-collapse collapse";
 
     var panelBody = document.createElement("div");
     panelBodyOuter.appendChild(panelBody);
@@ -54,9 +54,9 @@ function getPanelBody(todo){
     dateCreated.appendChild(document.createTextNode("Created on: " + todo["date"].toString()));
 
 
-    if(todo["status"]!=constants.UNASSIGNED){
+    if(todo["status"]!="UNASSIGNED"){
         var assignedTo = document.createElement("div");
-        row.appendChild(row);
+        row.appendChild(assignedTo);
         assignedTo.appendChild(document.createTextNode("Assigned to: " + todo["assigned"]));
     }
 
@@ -65,6 +65,7 @@ function getPanelBody(todo){
     descriptionRow.className += "row";
 
     var description = document.createElement("div");
+    descriptionRow.appendChild(description);
     description.className += "description col-sm-12";
     description.appendChild(document.createTextNode("Description: " + todo["description"]));
     return panelBodyOuter;
@@ -73,6 +74,7 @@ function getPanelHeading(todo){
 
     var panelHeading = document.createElement("div");
     panelHeading.className += "panel-heading";
+    panelHeading.setAttribute("id","head" + todo["todoId"].toString());
 
     var panelTitle = document.createElement("h4");
     panelHeading.appendChild(panelTitle);
@@ -81,12 +83,12 @@ function getPanelHeading(todo){
     var todoTitle = document.createElement("a");
     panelTitle.appendChild(todoTitle);
     todoTitle.setAttribute("data-toggle", "collapse");
-    todoTitle.setAttribute("href", "#qq" + todo["todoId"].toString());
+    todoTitle.setAttribute("href", "#body" + todo["todoId"].toString());
     todoTitle.appendChild(document.createTextNode(todo["name"]));
 
     var button = document.createElement("button");
     todoTitle.appendChild(button);
-    button.onclick = addAssignee(todo["todoId"].toString());
+
     button.setAttribute("type","button");
     button.style.float = "right";
     button.className += "btn btn-default btn-sm";
@@ -95,63 +97,82 @@ function getPanelHeading(todo){
     button.appendChild(rightSign);
     rightSign.className += "glyphicon glyphicon-chevron-right";
 
-    if(todo["status"]==constants.UNASSIGNED){
+    if(todo["status"] == constants.UNASSIGNED ){
+        button.onclick = function(){ addAssignee(todo["todoId"]);}
+
         var assignInput = document.createElement("input");
         todoTitle.insertBefore(assignInput,button);
         assignInput.setAttribute("type","text");
-        assignInput.setAttribute("id","assignedTo" + todo["todoId"].toString());
+        assignInput.setAttribute("id","assignedTo" + todo["todoId"]);
         assignInput.setAttribute("placeholder","assign to");
         assignInput.style.float = "right";
         assignInput.required = true;
 
-        button.createTextNode("Assign");
+        button.appendChild(document.createTextNode("Assign"));
     }
     else if(todo["status"]== constants.ASSIGNED ){
-        button.createTextNode("Completed");
+        button.onclick = function(){ changeStatus(todo["todoId"]);}
+        button.appendChild(document.createTextNode("Completed"));
     }
     else if(todo["status"]== constants.COMPLETED ){
-        button.createTextNode("Delete");
+        button.onclick = function(){ changeStatus(todo["todoId"]);}
+        button.appendChild(document.createTextNode("Delete"));
     }
     return panelHeading;
 }
 
+function removeElement(id,str){
+    var el = document.getElementById(str + id.toString());
+    if(el)
+        el.parentNode.removeChild(el);
+}
+
+function addElement(todo){
+
+    if( todo["status"] == constants.UNASSIGNED ){
+        document.getElementById("unassigned").appendChild(getPanelHeading(todo));
+        document.getElementById("unassigned").appendChild(getPanelBody(todo));
+    }
+    else if(todo["status"] == constants.ASSIGNED ){
+        document.getElementById("assigned").appendChild(getPanelHeading(todo));
+        document.getElementById("assigned").appendChild(getPanelBody(todo));
+    }
+    else if(todo["status"] == constants.COMPLETED ){
+        document.getElementById("completed").appendChild(getPanelHeading(todo));
+        document.getElementById("completed").appendChild(getPanelBody(todo));
+    }
+}
+
 function formatter(data){
 
+
     var data = JSON.parse(data);
-    window.date = data["date"];
+    globalDate = data["date"];
     var todos = data["todos"];
 
-    if(window.prevTodos === undefined ){
-        window.prevTodos = [];
+    if( prevTodos === undefined ){
+        prevTodos = {};
     }
     for(var i=0;i<todos.length;i++){
-        var changed = false;
+        var id = todos[i]["todoId"].toString();
+        if(prevTodos[id] == undefined)
+        {
+            prevTodos[id] = todos[i];
+            addElement(todos[i]);
+        }
+        else if(todos[i]["status"] == constants.DELETED ){
+            delete prevTodos.id;
+            removeElement(id,"head");
+            removeElement(id,"body");
+        }
+        else if( todos[i]["status"] != prevTodos[id]["status"] )
+        {
+            delete prevTodos[id];
+            removeElement(id,"head");
+            removeElement(id,"body");
 
-        for(var j=0;j<window.prevTodos.length;j++){
-            if(todos[i]["todoId"] == window.prevTodos[j]["todoId"]){
-                window.prevTodos[j] = todos[i];
-                changed = true;
-            }
-        }
-
-        if(!changed){
-            window.prevTodos.push(todos[i]);
-        }
-    }
-
-    for(var todonum in window.prevTodos){
-        var todo = window.prevTodos[todonum];
-        if( todo["status"] == constants.UNASSIGNED ){
-            document.getElementById("unassigned").appendChild(getPanelHeading(todo));
-            document.getElementById("unassigned").appendChild(getPanelBody(todo));
-        }
-        else if(todo["status"] == constants.ASSIGNED ){
-            document.getElementById("assigned").appendChild(getPanelHeading(todo));
-            document.getElementById("assigned").appendChild(getPanelBody(todo));
-        }
-        else if(todo["status"] == constants.COMPLETED ){
-            document.getElementById("completed").appendChild(getPanelHeading(todo));
-            document.getElementById("completed").appendChild(getPanelBody(todo));
+            prevTodos[id] = todos[i];
+            addElement(todos[i]);
         }
     }
 }
@@ -164,26 +185,18 @@ function addTask(){
     executer("/TodoTodo/addtask",method,params,getTodos);
 }
 
-function addTaskFunc(){
-}
-
 getTodos();
 
 function addAssignee(id){
     var method="post";
     var assignedTo = document.getElementById("assignedTo" + id).value;
-    var params = "todoId=" + id + "&assignedTo=" + assignedTo + "&date=" + window.date;
+    var params = "todoId=" + id + "&assignedTo=" + assignedTo + "&date=" + globalDate;
     executer("/TodoTodo/assign",method,params,changeStatusfunc);
 }
 function changeStatus(id){
     var method="post";
-    var status;
-    for(var i=0;i<window.prevTodos.length;i++){
-        if(window.prevTodos[i]["todoId"] === id){
-            status = window.prevTodos[i]["status"];
-        }
-    }
-    var params = "todoId=" + id + "&status=" + status + "&date=" + window.date;
+    var status = prevTodos[id]["status"];
+    var params = "todoId=" + id + "&status=" + status;
 
     executer("/TodoTodo/transfer",method,params,changeStatusfunc);
 }

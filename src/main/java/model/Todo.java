@@ -12,7 +12,7 @@ public class Todo {
     private String description;
     private String creator;
     private Date date;
-    private String status;
+    private Constants status;
     private String assigned;
     private static long todoId = 0;
 
@@ -23,7 +23,7 @@ public class Todo {
         this.description = description;
         this.creator = creator;
         this.date = new Date();
-        this.status = "0";
+        this.status = Constants.UNASSIGNED;
     }
 
 
@@ -59,11 +59,11 @@ public class Todo {
         this.date = date;
     }
 
-    public String getStatus() {
+    public Constants getStatus() {
         return status;
     }
 
-    synchronized public void setStatus(String status) {
+    synchronized public void setStatus(Constants status) {
         this.status = status;
     }
 
